@@ -23,7 +23,7 @@ public class HiddenKill extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 750, 550);
 	    camera.update();
-
+	    asdasdasdad
 	    cabra = new Personaje(400,400);
 	}
 
