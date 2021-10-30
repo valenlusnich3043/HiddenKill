@@ -1,30 +1,30 @@
 package com.micheliani.game;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.micheliani.game.pantallas.PantallaJuego;
-import com.micheliani.game.personajes.Personaje;
 
 public class HiddenKill extends Game {
 	OrthographicCamera camera;
 	public SpriteBatch batch;
+	public static final int ancho = 400;
+	public static final int alto = 208;
+	public static final float PPM = 45; 
+	
 	Texture personajeImagen1;
-	Personaje cabra;
+//	Personaje cabra;
 
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		setScreen(new PantallaJuego(this));
-//		personajeImagen1 = new Texture("hinchaDeBoca.png"); 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 750, 550);
 	    camera.update();
-	    asdasdasdad
-	    cabra = new Personaje(400,400);
+//	    cabra = new Personaje(500,500);
+	    
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class HiddenKill extends Game {
 	    batch.setProjectionMatrix(camera.combined);
 	    
 		batch.begin();
-		cabra.render(batch);
+//		cabra.render(batch);
 //		batch.draw(personajeImagen1, 0, 0);
 		batch.end();
 		
