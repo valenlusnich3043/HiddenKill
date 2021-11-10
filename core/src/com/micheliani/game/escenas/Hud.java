@@ -7,17 +7,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 
-public class Hud {
+public class Hud implements Disposable{
 	
 	public Stage stage;
 	private Viewport viewport;
 	
 	private Integer cuentaRegresiva;
-	private Integer lista;
+//	private Integer lista;
 	
 	Table table;
 	
@@ -30,7 +31,7 @@ public class Hud {
 	
 	public Hud(SpriteBatch sb) {
 		cuentaRegresiva = 200;
-		lista = 0;
+//		lista = 0;
 		
 		viewport = new FitViewport(HiddenKill.ancho, HiddenKill.alto, new OrthographicCamera());
 		stage = new Stage(viewport, sb);
@@ -55,5 +56,9 @@ public class Hud {
 		
 	}
 	
+	@Override
+	public void dispose() {
+		stage.dispose();
+	}
 
 }

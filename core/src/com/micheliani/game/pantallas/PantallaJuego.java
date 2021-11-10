@@ -5,28 +5,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.escenas.Hud;
+import com.micheliani.game.herramientas.B2WorldCreator;
 import com.micheliani.game.sprites.Personaje;
 
 public class PantallaJuego implements Screen{
 
 	private HiddenKill hiddenKill;
+	private TextureAtlas atlas;
+	
+	// basic playscreen variables
 	private OrthographicCamera camaraJuego;
 	private Viewport gamePort;
 	private Hud hud;
@@ -44,6 +42,8 @@ public class PantallaJuego implements Screen{
 	private Personaje player;
 	
 	public PantallaJuego(HiddenKill hiddenKill) { 
+		atlas = new TextureAtlas("personaje.pack");//empieza error video 10
+		
 		this.hiddenKill = hiddenKill;
 		camaraJuego = new OrthographicCamera();
 		gamePort = new FitViewport(hiddenKill.ancho / hiddenKill.PPM, hiddenKill.alto / hiddenKill.PPM, camaraJuego);
@@ -60,45 +60,16 @@ public class PantallaJuego implements Screen{
 		world = new World(new Vector2(0, -10), true);
 		b2dr = new Box2DDebugRenderer();
 		
-		BodyDef bdef = new BodyDef();
-		PolygonShape shape = new PolygonShape();
-		FixtureDef fdef = new FixtureDef();
-		Body body;
-			
+		new B2WorldCreator(world, map);
 		
-		//create suelo pasto bodies/fixture
-		for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-			Rectangle rect = ((RectangleMapObject) object).getRectangle();
-			
-			bdef.type = BodyDef.BodyType.StaticBody;
-			bdef.position.set((rect.getX() + rect.getWidth() / 2) / hiddenKill.PPM, (rect.getY() + rect.getHeight() / 2) / hiddenKill.PPM);
-			
-			body = world.createBody(bdef);
-			
-			shape.setAsBox((rect.getWidth() / 2)/ hiddenKill.PPM, (rect.getHeight() / 2)/ hiddenKill.PPM);
-			fdef.shape = shape;
-			body.createFixture(fdef);
-		}
-		
-		//create piedra bodies/fixture
-
-		for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
-			Rectangle rect = ((RectangleMapObject) object).getRectangle();
-			
-			bdef.type = BodyDef.BodyType.StaticBody;
-			bdef.position.set((rect.getX() + rect.getWidth() / 2) / hiddenKill.PPM, (rect.getY() + rect.getHeight() / 2)/ hiddenKill.PPM );
-			
-			body = world.createBody(bdef);
-			
-			shape.setAsBox((rect.getWidth() / 2)/ hiddenKill.PPM,(rect.getHeight() / 2)/ hiddenKill.PPM);
-			fdef.shape = shape;
-			body.createFixture(fdef);
-		}
-		
-		player = new Personaje(world);
+		player = new Personaje(world, this);
 
 	}
-
+	
+	public TextureAtlas getAtlas() {
+		return atlas;
+	}
+	
 	@Override
 	public void show() {
 		
@@ -136,6 +107,8 @@ public class PantallaJuego implements Screen{
 		
 		world.step(1/60f, 6, 2);
 		
+		player.update(dt);
+		
 		camaraJuego.position.x = player.b2body.getPosition().x;
 		
 		//update our gamecam with correct coordinates after changes
@@ -150,14 +123,19 @@ public class PantallaJuego implements Screen{
 		update(delta);		
 		
 		//limpiar pantalla
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		//render del mapa
 		renderer.render();
 		
 		//renderer our Box2DDebugLines
-		b2dr.render(world, camaraJuego.combined);
+		b2dr.render(world, camaraJuego.combined); 
+		
+		hiddenKill.batch.setProjectionMatrix(camaraJuego.combined);
+		hiddenKill.batch.begin();
+		player.draw(hiddenKill.batch);
+		hiddenKill.batch.end();
 		
 		hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		hud.stage.draw();
@@ -190,8 +168,11 @@ public class PantallaJuego implements Screen{
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		map.dispose();
+		renderer.dispose();
+		world.dispose();
+		b2dr.dispose();
+		hud.dispose();
 	}
 
 }
