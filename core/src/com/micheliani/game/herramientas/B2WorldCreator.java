@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.micheliani.game.HiddenKill;
+import com.micheliani.game.sprites.Piedra;
 
 public class B2WorldCreator {
 	
@@ -39,14 +40,7 @@ public class B2WorldCreator {
 		for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle rect = ((RectangleMapObject) object).getRectangle();
 			
-			bdef.type = BodyDef.BodyType.StaticBody;
-			bdef.position.set((rect.getX() + rect.getWidth() / 2) / HiddenKill.PPM, (rect.getY() + rect.getHeight() / 2)/ HiddenKill.PPM );
-			
-			body = world.createBody(bdef);
-			
-			shape.setAsBox((rect.getWidth() / 2)/ HiddenKill.PPM,(rect.getHeight() / 2)/ HiddenKill.PPM);
-			fdef.shape = shape;
-			body.createFixture(fdef);
+			new Piedra(world, map, rect);
 		}
 	}
 

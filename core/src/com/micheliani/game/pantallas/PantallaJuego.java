@@ -48,7 +48,7 @@ public class PantallaJuego implements Screen{
 		camaraJuego = new OrthographicCamera();
 		gamePort = new FitViewport(hiddenKill.ancho / hiddenKill.PPM, hiddenKill.alto / hiddenKill.PPM, camaraJuego);
 		
-		hud = new Hud(hiddenKill.batch);
+		hud = new Hud(hiddenKill.batch); 
 		
 		maploader = new TmxMapLoader();
 		map = maploader.load("hiddenKillMap.tmx");

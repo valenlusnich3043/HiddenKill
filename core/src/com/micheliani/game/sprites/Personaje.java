@@ -13,15 +13,15 @@ import com.micheliani.game.pantallas.PantallaJuego;
 public class Personaje extends Sprite{
 	public World world;
 	public Body b2body;
-	private TextureRegion punkQuieto; 
+	private TextureRegion BikerQuieto; 
 	
 	public Personaje(World world, PantallaJuego screen) {
-		super(screen.getAtlas().findRegion("Punk"));
+		super(screen.getAtlas().findRegion("little_mario"));
 		this.world = world;
 		definePersonaje();
-		punkQuieto = new TextureRegion(getTexture(), 0, 0, 48, 48);
-		setBounds(0, 0, 48 / HiddenKill.PPM, 48 / HiddenKill.PPM);
-		setRegion(punkQuieto);
+		BikerQuieto = new TextureRegion(getTexture(), 0, 2, 18, 18);
+		setBounds(0, 0, 16 / HiddenKill.PPM, 16 / HiddenKill.PPM);
+		setRegion(BikerQuieto);
 	}
 	
 	public void update(float dt) {
