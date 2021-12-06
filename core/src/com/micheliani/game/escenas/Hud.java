@@ -18,6 +18,7 @@ public class Hud implements Disposable{
 	private Viewport viewport;
 	
 	private Integer cuentaRegresiva;
+	private float timeCount;
 //	private Integer lista;
 	
 	Table table;
@@ -30,7 +31,7 @@ public class Hud implements Disposable{
 	
 	
 	public Hud(SpriteBatch sb) {
-		cuentaRegresiva = 200;
+		cuentaRegresiva = 300;
 //		lista = 0;
 		
 		viewport = new FitViewport(HiddenKill.ancho, HiddenKill.alto, new OrthographicCamera());
@@ -54,6 +55,15 @@ public class Hud implements Disposable{
 //		table.add(listaLabel).expandX();
 		stage.addActor(table);
 		
+	}
+	
+	public void update(float dt) {
+		timeCount += dt;
+		if(timeCount >= 1) {
+			cuentaRegresiva--;
+			cuentaRegresivaLabel.setText(String.format("%03d", cuentaRegresiva));
+			timeCount = 0;
+		}
 	}
 	
 	@Override

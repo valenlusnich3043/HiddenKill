@@ -3,6 +3,8 @@ package com.micheliani.game.pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -41,6 +43,8 @@ public class PantallaJuego implements Screen{
 	
 	private Personaje player;
 	
+	private Music music;
+	
 	public PantallaJuego(HiddenKill hiddenKill) { 
 		atlas = new TextureAtlas("personaje.pack");//empieza error video 10
 		
@@ -63,6 +67,10 @@ public class PantallaJuego implements Screen{
 		new B2WorldCreator(world, map);
 		
 		player = new Personaje(world, this);
+		
+		music = HiddenKill.manager.get("audio/musica/musica.ogg",  Music.class);
+		music.setLooping(true);
+		//music.play();
 
 	}
 	
@@ -77,11 +85,13 @@ public class PantallaJuego implements Screen{
 	
 	public void handleInput(float dt) {
 		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) 
+		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 			player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
+			HiddenKill.manager.get("audio/sonidos/salto1.wav",  Sound.class).play();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) 
 			player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) 
 			player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
 		
 		//	if(Gdx.input.isTouched()) {
@@ -108,7 +118,7 @@ public class PantallaJuego implements Screen{
 		world.step(1/60f, 6, 2);
 		
 		player.update(dt);
-		
+		hud.update(dt);
 		camaraJuego.position.x = player.b2body.getPosition().x;
 		
 		//update our gamecam with correct coordinates after changes
