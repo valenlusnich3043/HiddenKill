@@ -42,6 +42,8 @@ public class PantallaJuego implements Screen{
 	private Box2DDebugRenderer b2dr;
 	
 	private Personaje player;
+	private Personaje player2;
+
 	
 	private Music music;
 	
@@ -67,10 +69,12 @@ public class PantallaJuego implements Screen{
 		new B2WorldCreator(world, map);
 		
 		player = new Personaje(world, this);
+//		player2 = new Personaje(world,this);
 		
 		music = HiddenKill.manager.get("audio/musica/musica.ogg",  Music.class);
+		music.setVolume(0.08f);
 		music.setLooping(true);
-		//music.play();
+		music.play();
 
 	}
 	
@@ -85,6 +89,7 @@ public class PantallaJuego implements Screen{
 	
 	public void handleInput(float dt) {
 		
+		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 			player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
 			HiddenKill.manager.get("audio/sonidos/salto1.wav",  Sound.class).play();
@@ -93,22 +98,7 @@ public class PantallaJuego implements Screen{
 			player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) 
 			player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-		
-		//	if(Gdx.input.isTouched()) {
-//		camaraJuego.position.x += 100 * dt;
-//	}
 
-//	if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
-//		camaraJuego.position.x += 100 * dt;
-//	}else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
-//		camaraJuego.position.x -= 100 * dt;
-//	}else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
-//		camaraJuego.position.y += 100 * dt; 
-//	}else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
-//		camaraJuego.position.y -= 100 * dt; 
-//		
-//	}
-	 
 	}
 	
 	public void update(float dt) {
@@ -125,6 +115,11 @@ public class PantallaJuego implements Screen{
 		camaraJuego.update();
 		//tell our renderer to draw only what our camera can see in our game world 	
 		renderer.setView(camaraJuego);
+		
+		//Determino los finales del juego
+		if(player.getY() < 0 || player.getX() > 87) {
+			player.currentState = Personaje.State.DEAD;
+		}
 	}
 
 	@Override
@@ -149,8 +144,21 @@ public class PantallaJuego implements Screen{
 		
 		hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		hud.stage.draw();
+		
+		if(gameOver()) {
+			hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
+			dispose();
+		}
+		
 	}
 
+	public boolean gameOver() {
+		if(player.currentState == Personaje.State.DEAD) {
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 		gamePort.update(width, height);

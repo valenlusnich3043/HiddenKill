@@ -3,10 +3,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.micheliani.game.elementos.Recursos;
+import com.micheliani.game.elementos.Texto;
 import com.micheliani.game.pantallas.PantallaJuego;
+import com.micheliani.game.red.HiloCliente;
+import com.micheliani.game.utiles.Global;
+import com.micheliani.game.utiles.Render;
 
 public class HiddenKill extends Game {
 	OrthographicCamera camera;
@@ -14,15 +20,21 @@ public class HiddenKill extends Game {
 	public static final int ancho = 400;
 	public static final int alto = 208;
 	public static final float PPM = 45; 
+	private Texto espera;
+	private HiloCliente hc;
 	
 	Texture personajeImagen1;
-//	Personaje cabra;
 
-	public static AssetManager manager;
+	public static AssetManager manager; 
 	
 	
 	@Override
 	public void create () {
+
+		espera = new Texto(Recursos.FUENTE, 100, Color.WHITE, false);
+		System.out.println("Esperando rival");
+//		espera.setTexto("Esperando rival");
+		
 		batch = new SpriteBatch();
 		manager = new AssetManager();
 		
@@ -35,12 +47,24 @@ public class HiddenKill extends Game {
 		camera.setToOrtho(false, 750, 550);
 	    camera.update();
 	    
-//	    cabra = new Personaje(500,500);    
+	    hc = new HiloCliente();
+	    hc.start();
+		
+
 	}
  
 	@Override
 	public void render () {
+		Render.limpiarPantalla();
+		
+		if(!Global.empieza) {
+			Render.begin();
+//			espera.dibujar();
+			Render.end();
+		} else {
+		
 		super.render();
+		}
 //	    camera.update();
 //	    batch.setProjectionMatrix(camera.combined); REVISAR
 	    

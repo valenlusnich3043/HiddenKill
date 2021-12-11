@@ -15,7 +15,7 @@ import com.micheliani.game.pantallas.PantallaJuego;
 
 public class Personaje extends Sprite {
 	public enum State {
-		FALLING, JUMPING, STANDING, RUNNING
+		FALLING, JUMPING, STANDING, RUNNING, DEAD
 	}
 
 	public State currentState;
@@ -27,6 +27,7 @@ public class Personaje extends Sprite {
 	private Animation<TextureRegion> CyborgJump;
 	private float stateTimer;
 	private boolean runningRight;
+	private boolean muerteJugador;
 
 	public Personaje(World world, PantallaJuego screen) {
 		super(screen.getAtlas().findRegion("Cyborg_idle"));
@@ -95,7 +96,8 @@ public class Personaje extends Sprite {
 		
 		stateTimer = currentState == previousState ? stateTimer + dt: 0; 
 		previousState = currentState;
-		
+		System.out.println("X:  " + b2body.getPosition().x + "  Y:   " + b2body.getPosition().y);
+
 		return region;
 	}
 
@@ -106,11 +108,14 @@ public class Personaje extends Sprite {
 			return State.FALLING;
 		} else if (b2body.getLinearVelocity().x != 0) {
 			return State.RUNNING;
-		} else {
+		} else if (muerteJugador){
+			return State.DEAD;
+		}else{
 			return State.STANDING;
 		}
-	}
 
+	}
+	
 	public void definePersonaje() {
 		BodyDef bdef = new BodyDef();
 		bdef.position.set(32 / HiddenKill.PPM, 32 / HiddenKill.PPM);
@@ -123,6 +128,12 @@ public class Personaje extends Sprite {
 
 		fdef.shape = shape;
 		b2body.createFixture(fdef);
+
+	}
+	
+	
+	public boolean personajeMuerto() {
+		return muerteJugador;
 	}
 
 }
