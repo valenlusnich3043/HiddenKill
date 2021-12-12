@@ -21,7 +21,6 @@ public class HiddenKill extends Game {
 	public static final int alto = 208;
 	public static final float PPM = 45; 
 	private Texto espera;
-	private HiloCliente hc;
 	
 	Texture personajeImagen1;
 
@@ -46,34 +45,33 @@ public class HiddenKill extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 750, 550);
 	    camera.update();
-	    
-	    hc = new HiloCliente();
-	    hc.start();
-		
 
 	}
  
 	@Override
-	public void render () {
-		Render.limpiarPantalla();
-		
-		if(!Global.empieza) {
-			Render.begin();
+	public void render() {
+
+//		Render.limpiarPantalla();
+//		
+//		if(!Global.empieza) {
+//			Render.begin();
 //			espera.dibujar();
-			Render.end();
-		} else {
-		
+//			Render.end();
+//		} else {
+
 		super.render();
-		}
+
+//		}
 //	    camera.update();
 //	    batch.setProjectionMatrix(camera.combined); REVISAR
-	    
+
 //		batch.begin();
 ////		cabra.render(batch);
 ////		batch.draw(personajeImagen1, 0, 0);
 //		batch.end();
-		
+
 	}
+	
 	
 	@Override
 	public void dispose () {

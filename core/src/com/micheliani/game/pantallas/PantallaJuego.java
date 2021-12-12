@@ -19,7 +19,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.escenas.Hud;
 import com.micheliani.game.herramientas.B2WorldCreator;
+import com.micheliani.game.red.HiloCliente;
 import com.micheliani.game.sprites.Personaje;
+import com.micheliani.game.utiles.Global;
+import com.micheliani.game.utiles.Render;
 
 public class PantallaJuego implements Screen{
 
@@ -44,8 +47,11 @@ public class PantallaJuego implements Screen{
 	private Personaje player;
 	private Personaje player2;
 
-	
+	//Asset Manager
 	private Music music;
+	
+	//Red
+	private HiloCliente hc;
 	
 	public PantallaJuego(HiddenKill hiddenKill) { 
 		atlas = new TextureAtlas("personaje.pack");//empieza error video 10
@@ -76,6 +82,8 @@ public class PantallaJuego implements Screen{
 		music.setLooping(true);
 		music.play();
 
+	    hc = new HiloCliente();
+	    hc.start();
 	}
 	
 	public TextureAtlas getAtlas() {
@@ -90,17 +98,21 @@ public class PantallaJuego implements Screen{
 	public void handleInput(float dt) {
 		
 		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 			player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-			HiddenKill.manager.get("audio/sonidos/salto1.wav",  Sound.class).play();
+			HiddenKill.manager.get("audio/sonidos/salto1.wav", Sound.class).play();
+			hc.enviarMensaje("Arriba");
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) 
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
 			player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) 
+			hc.enviarMensaje("Derecha");
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
 			player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-
+			hc.enviarMensaje("Izquierda");
+		}
 	}
-	
+
 	public void update(float dt) {
 		//handle user input first
 		handleInput(dt);
@@ -124,32 +136,40 @@ public class PantallaJuego implements Screen{
 
 	@Override
 	public void render(float delta) {
-		//separate our update logic from render
-		update(delta);		
-		
-		//limpiar pantalla
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		//render del mapa
-		renderer.render();
-		
-		//renderer our Box2DDebugLines
-		b2dr.render(world, camaraJuego.combined); 
-		
-		hiddenKill.batch.setProjectionMatrix(camaraJuego.combined);
-		hiddenKill.batch.begin();
-		player.draw(hiddenKill.batch);
-		hiddenKill.batch.end();
-		
-		hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-		hud.stage.draw();
-		
-		if(gameOver()) {
-			hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
-			dispose();
+		Render.limpiarPantalla();
+
+		if (!Global.empieza) {
+			Render.begin();
+//			espera.dibujar();
+			Render.end();
+		} else {
+			// separate our update logic from render
+			update(delta);
+
+			// limpiar pantalla
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+			// render del mapa
+			renderer.render();
+
+			// renderer our Box2DDebugLines
+			b2dr.render(world, camaraJuego.combined);
+
+			hiddenKill.batch.setProjectionMatrix(camaraJuego.combined);
+			hiddenKill.batch.begin();
+			player.draw(hiddenKill.batch);
+			hiddenKill.batch.end();
+
+			hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+			hud.stage.draw();
+
+			if (gameOver()) {
+				hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
+				dispose();
+			}
 		}
-		
+
 	}
 
 	public boolean gameOver() {

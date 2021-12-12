@@ -54,7 +54,7 @@ public class HiloCliente extends Thread{
 	}
 
 	private void procesarMensaje(DatagramPacket dp) {
-		String msg = dp.getData().toString().trim();
+		String msg = (new String(dp.getData())).trim();
 		if(msg.equals("OK")) {
 			ipServer = dp.getAddress(); 
 		}else if(msg.equals("Empieza")) {
