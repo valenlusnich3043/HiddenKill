@@ -1,10 +1,8 @@
 package com.micheliani.game.pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -19,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.escenas.Hud;
 import com.micheliani.game.herramientas.B2WorldCreator;
+import com.micheliani.game.interfaces.KeyListener;
 import com.micheliani.game.red.HiloCliente;
 import com.micheliani.game.sprites.Personaje;
 import com.micheliani.game.utiles.Global;
@@ -44,8 +43,8 @@ public class PantallaJuego implements Screen{
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
-	private Personaje player;
-	private Personaje player2;
+	public Personaje player;
+	public Personaje player2;
 
 	//Asset Manager
 	private Music music;
@@ -53,18 +52,22 @@ public class PantallaJuego implements Screen{
 	//Red
 	private HiloCliente hc;
 	
+	//Teclas Keylistener
+	private KeyListener teclas;
+	
 	public PantallaJuego(HiddenKill hiddenKill) { 
 		atlas = new TextureAtlas("personaje.pack");//empieza error video 10
 		
 		this.hiddenKill = hiddenKill;
 		camaraJuego = new OrthographicCamera();
-		gamePort = new FitViewport(hiddenKill.ancho / hiddenKill.PPM, hiddenKill.alto / hiddenKill.PPM, camaraJuego);
+		gamePort = new FitViewport(HiddenKill.ancho / HiddenKill.PPM, HiddenKill.alto / HiddenKill.PPM, camaraJuego);
 		
 		hud = new Hud(hiddenKill.batch); 
 		
+		//cargo el mapa
 		maploader = new TmxMapLoader();
 		map = maploader.load("hiddenKillMap.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 1 / hiddenKill.PPM);
+		renderer = new OrthogonalTiledMapRenderer(map, 1 / HiddenKill.PPM);
 		
 		//centrar la camara correctamente al inicio del juego 
 		camaraJuego.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
@@ -75,15 +78,18 @@ public class PantallaJuego implements Screen{
 		new B2WorldCreator(world, map);
 		
 		player = new Personaje(world, this);
-//		player2 = new Personaje(world,this);
+		player2 = new Personaje(world,this);
 		
 		music = HiddenKill.manager.get("audio/musica/musica.ogg",  Music.class);
 		music.setVolume(0.08f);
 		music.setLooping(true);
 		music.play();
 
-	    hc = new HiloCliente();
+	    hc = new HiloCliente(this);
 	    hc.start();
+		teclas = new KeyListener(hc);
+	    Gdx.input.setInputProcessor(teclas);
+	    
 	}
 	
 	public TextureAtlas getAtlas() {
@@ -98,19 +104,18 @@ public class PantallaJuego implements Screen{
 	public void handleInput(float dt) {
 		
 		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-			player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-			HiddenKill.manager.get("audio/sonidos/salto1.wav", Sound.class).play();
-			hc.enviarMensaje("Arriba");
+		if (teclas.isArriba1()) {
+			hc.enviarMensaje("ApreteArriba");
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
-			player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-			hc.enviarMensaje("Derecha");
+		
+		if (teclas.isDerecha1()) {
+			hc.enviarMensaje("ApreteDerecha");
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
-			player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-			hc.enviarMensaje("Izquierda");
+		
+		if (teclas.isIzquierda1()) {
+			hc.enviarMensaje("ApreteIzquierda");
 		}
+	
 	}
 
 	public void update(float dt) {
@@ -120,9 +125,13 @@ public class PantallaJuego implements Screen{
 		world.step(1/60f, 6, 2);
 		
 		player.update(dt);
+		player2.update(dt);
+
 		hud.update(dt);
-		camaraJuego.position.x = player.b2body.getPosition().x;
 		
+		camaraJuego.position.x = player.b2body.getPosition().x;
+		camaraJuego.position.x = player2.b2body.getPosition().x;
+
 		//update our gamecam with correct coordinates after changes
 		camaraJuego.update();
 		//tell our renderer to draw only what our camera can see in our game world 	
@@ -131,6 +140,10 @@ public class PantallaJuego implements Screen{
 		//Determino los finales del juego
 		if(player.getY() < 0 || player.getX() > 87) {
 			player.currentState = Personaje.State.DEAD;
+		}
+		
+		if(player2.getY() < 0 || player2.getX() > 87) {
+			player2.currentState = Personaje.State.DEAD;
 		}
 	}
 
@@ -158,7 +171,11 @@ public class PantallaJuego implements Screen{
 
 			hiddenKill.batch.setProjectionMatrix(camaraJuego.combined);
 			hiddenKill.batch.begin();
+			
+			
 			player.draw(hiddenKill.batch);
+			player2.draw(hiddenKill.batch);
+
 			hiddenKill.batch.end();
 
 			hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -174,8 +191,13 @@ public class PantallaJuego implements Screen{
 
 	public boolean gameOver() {
 		if(player.currentState == Personaje.State.DEAD) {
-			return true;
+			return false;
 		}
+		
+		if(player2.currentState == Personaje.State.DEAD) {
+			return false;
+		}
+		
 		return false;
 	}
 	
@@ -212,5 +234,7 @@ public class PantallaJuego implements Screen{
 		b2dr.dispose();
 		hud.dispose();
 	}
+
+
 
 }

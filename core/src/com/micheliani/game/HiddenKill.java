@@ -10,11 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.micheliani.game.elementos.Recursos;
 import com.micheliani.game.elementos.Texto;
 import com.micheliani.game.pantallas.PantallaJuego;
-import com.micheliani.game.red.HiloCliente;
-import com.micheliani.game.utiles.Global;
-import com.micheliani.game.utiles.Render;
 
-public class HiddenKill extends Game {
+public class HiddenKill extends Game{
 	OrthographicCamera camera;
 	public SpriteBatch batch;
 	public static final int ancho = 400;
@@ -79,4 +76,5 @@ public class HiddenKill extends Game {
 //		personajeImagen1.dispose();
 
 	}
+
 }

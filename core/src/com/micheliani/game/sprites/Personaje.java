@@ -1,9 +1,9 @@
 package com.micheliani.game.sprites;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -96,11 +96,17 @@ public class Personaje extends Sprite {
 		
 		stateTimer = currentState == previousState ? stateTimer + dt: 0; 
 		previousState = currentState;
-		System.out.println("X:  " + b2body.getPosition().x + "  Y:   " + b2body.getPosition().y);
 
 		return region;
 	}
-
+	
+	public void jump2(){
+        if (currentState != State.JUMPING) {
+            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+            currentState = State.JUMPING;
+        }
+    }
+	
 	private State getState() {
 		if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING) {
 			return State.JUMPING;
@@ -115,6 +121,13 @@ public class Personaje extends Sprite {
 		}
 
 	}
+	
+	public void jump(){
+        if (currentState != State.JUMPING) {
+            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+            currentState = State.JUMPING;
+        }
+    }
 	
 	public void definePersonaje() {
 		BodyDef bdef = new BodyDef();
