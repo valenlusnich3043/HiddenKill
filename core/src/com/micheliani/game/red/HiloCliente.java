@@ -10,15 +10,15 @@ import java.net.UnknownHostException;
 import com.micheliani.game.pantallas.PantallaJuego;
 import com.micheliani.game.utiles.Global;
 
-public class HiloCliente extends Thread{
-	
+public class HiloCliente extends Thread {
+
 	private DatagramSocket conexion;
 	private InetAddress ipServer;
 	private int puerto = 9990;
 	private boolean fin = false;
 	private PantallaJuego app;
-	
-	public HiloCliente(PantallaJuego app){
+
+	public HiloCliente(PantallaJuego app) {
 		this.app = app;
 		try {
 			ipServer = InetAddress.getByName("255.255.255.255");
@@ -29,7 +29,7 @@ public class HiloCliente extends Thread{
 		}
 		enviarMensaje("Conexion");
 	}
-	
+
 	public void enviarMensaje(String msg) {
 
 		byte[] data = msg.getBytes();
@@ -53,24 +53,24 @@ public class HiloCliente extends Thread{
 				e.printStackTrace();
 			}
 			procesarMensaje(dp);
-		}while(!fin);
+		} while (!fin);
 	}
 
 	private void procesarMensaje(DatagramPacket dp) {
 		String msg = (new String(dp.getData())).trim();
-		
+
 		String[] mensajeParametrizado = msg.split("-");
-		
-		if(mensajeParametrizado.length<2) {
-			if(msg.equals("OK")) {
-				ipServer = dp.getAddress(); 
-			}else if(msg.equals("Empieza")) {
+
+		if (mensajeParametrizado.length < 2) {
+			if (msg.equals("OK")) {
+				ipServer = dp.getAddress();
+			} else if (msg.equals("Empieza")) {
 				Global.empieza = true;
 			}
-		
-		}else {
-			if(mensajeParametrizado[0].equals("Actualizar")) {
-				if(mensajeParametrizado[1].equals("player")) {
+
+		} else {
+			if (mensajeParametrizado[0].equals("Actualizar")) {
+				if (mensajeParametrizado[1].equals("P1")) {
 					float posY = Float.parseFloat(mensajeParametrizado[2]);
 					app.player.setY(posY);
 				}
@@ -78,6 +78,5 @@ public class HiloCliente extends Thread{
 		}
 
 	}
-	
 
 }

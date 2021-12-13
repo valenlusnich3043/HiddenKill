@@ -100,13 +100,6 @@ public class Personaje extends Sprite {
 		return region;
 	}
 	
-	public void jump2(){
-        if (currentState != State.JUMPING) {
-            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
-            currentState = State.JUMPING;
-        }
-    }
-	
 	private State getState() {
 		if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING) {
 			return State.JUMPING;
