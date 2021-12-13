@@ -3,6 +3,7 @@ package com.micheliani.game.pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -27,6 +28,8 @@ public class PantallaJuego implements Screen{
 
 	private HiddenKill hiddenKill;
 	private TextureAtlas atlas;
+	
+	public int nroJugador = 0;
 	
 	// basic playscreen variables
 	private OrthographicCamera camaraJuego;
@@ -60,7 +63,7 @@ public class PantallaJuego implements Screen{
 		
 		this.hiddenKill = hiddenKill;
 		camaraJuego = new OrthographicCamera();
-		gamePort = new FitViewport(HiddenKill.ancho / HiddenKill.PPM, HiddenKill.alto / HiddenKill.PPM, camaraJuego);
+		gamePort = new FitViewport(HiddenKill.ancho / HiddenKill.PPM, 200 / HiddenKill.PPM, camaraJuego);
 		
 		hud = new Hud(hiddenKill.batch); 
 		
@@ -70,8 +73,9 @@ public class PantallaJuego implements Screen{
 		renderer = new OrthogonalTiledMapRenderer(map, 1 / HiddenKill.PPM);
 		
 		//centrar la camara correctamente al inicio del juego 
-		camaraJuego.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-
+//		camaraJuego.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+		camaraJuego.setToOrtho(false, gamePort.getWorldWidth(), gamePort.getWorldHeight());
+		
 		world = new World(new Vector2(0, -10), true);
 		b2dr = new Box2DDebugRenderer();
 		
@@ -105,14 +109,32 @@ public class PantallaJuego implements Screen{
 		
 		
 		if (teclas.isArriba1()) {
+			if(nroJugador==1) {
+				player.jump();
+				HiddenKill.manager.get("audio/sonidos/salto1.wav",  Sound.class).play();		
+			}else {
+				player2.jump();
+				HiddenKill.manager.get("audio/sonidos/salto1.wav",  Sound.class).play();		
+			}
+		
 			hc.enviarMensaje("ApreteArriba");
 		}
 		
 		if (teclas.isDerecha1()) {
+			if(nroJugador==1) {
+				player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);							
+			}else {
+				player2.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player2.b2body.getWorldCenter(), true);							
+			}
 			hc.enviarMensaje("ApreteDerecha");
 		}
 		
 		if (teclas.isIzquierda1()) {
+			if(nroJugador==1) {
+				player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+			}else {
+				player2.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player2.b2body.getWorldCenter(), true);
+			}
 			hc.enviarMensaje("ApreteIzquierda");
 		}
 	
@@ -203,9 +225,8 @@ public class PantallaJuego implements Screen{
 	
 	@Override
 	public void resize(int width, int height) {
-		gamePort.update(width, height);
-		// TODO Auto-generated method stub
-		
+//		gamePort.update(width, height);
+		gamePort = new FitViewport(width, height);
 	}
 
 	@Override

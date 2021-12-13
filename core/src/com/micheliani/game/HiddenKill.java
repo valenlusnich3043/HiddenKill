@@ -15,7 +15,7 @@ public class HiddenKill extends Game{
 	OrthographicCamera camera;
 	public SpriteBatch batch;
 	public static final int ancho = 400;
-	public static final int alto = 208;
+	public static final int alto = 300;
 	public static final float PPM = 45; 
 	private Texto espera;
 	
