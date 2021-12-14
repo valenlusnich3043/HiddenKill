@@ -154,8 +154,8 @@ public class PantallaJuego implements Screen{
 //		camaraJuego.position.x = player2.b2body.getPosition().x;
 		//update our gamecam with correct coordinates after changes
 		contInicio += dt;
-		if(contInicio>5) {
-			camaraJuego.position.x += 2*dt;
+		if(contInicio>10) {
+			camaraJuego.position.x += (1.2)*dt;
 		}
 		
 		camaraJuego.update();
@@ -171,6 +171,9 @@ public class PantallaJuego implements Screen{
 //			player2.currentState = Personaje.State.DEAD;
 //		}
 	}
+	
+	
+
 
 	@Override
 	public void render(float delta) {
