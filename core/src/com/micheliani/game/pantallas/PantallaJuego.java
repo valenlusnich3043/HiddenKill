@@ -10,14 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.escenas.Hud;
-import com.micheliani.game.herramientas.B2WorldCreator;
 import com.micheliani.game.interfaces.KeyListener;
 import com.micheliani.game.red.HiloCliente;
 import com.micheliani.game.sprites.Personaje;
@@ -62,7 +58,7 @@ public class PantallaJuego implements Screen{
 	private KeyListener teclas;
 	
 	public PantallaJuego(HiddenKill hiddenKill) { 
-		atlas = new TextureAtlas("personaje.pack");//empieza error video 10
+		atlas = new TextureAtlas("personaje.pack");
 		
 		this.hiddenKill = hiddenKill;
 		camaraJuego = new OrthographicCamera();

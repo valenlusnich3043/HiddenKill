@@ -91,9 +91,15 @@ public class HiloCliente extends Thread {
 					String state = (mensajeParametrizado[2]);
 					app.player2.setCurrentState(state);
 				}
+			} else if (mensajeParametrizado[0].equals("Fin")) {
+				if (mensajeParametrizado[1].equals("P1")) {
+					
+				} else if (mensajeParametrizado[1].equals("P2")) {
+					
+				}
 			}
+
 		}
 
 	}
-
 }
