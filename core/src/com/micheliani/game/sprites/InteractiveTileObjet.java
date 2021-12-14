@@ -18,22 +18,22 @@ public abstract class InteractiveTileObjet {
 	protected Body body;
 	
 	public InteractiveTileObjet(World world, TiledMap map, Rectangle bounds) {
-		this.world = world;
-		this.map = map;
-		this.bounds = bounds;
-		
-		BodyDef bdef = new BodyDef();
-		FixtureDef fdef = new FixtureDef();
-		PolygonShape shape = new PolygonShape();
-		
-		bdef.type = BodyDef.BodyType.StaticBody;
-		bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / HiddenKill.PPM, (bounds.getY() + bounds.getHeight() / 2)/ HiddenKill.PPM );
-		
-		body = world.createBody(bdef);
-		
-		shape.setAsBox((bounds.getWidth() / 2)/ HiddenKill.PPM,(bounds.getHeight() / 2)/ HiddenKill.PPM);
-		fdef.shape = shape;
-		body.createFixture(fdef);
+//		this.world = world;
+//		this.map = map;
+//		this.bounds = bounds;
+//		
+//		BodyDef bdef = new BodyDef();
+//		FixtureDef fdef = new FixtureDef();
+//		PolygonShape shape = new PolygonShape();
+//		
+//		bdef.type = BodyDef.BodyType.StaticBody;
+//		bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / HiddenKill.PPM, (bounds.getY() + bounds.getHeight() / 2)/ HiddenKill.PPM );
+//		
+//		body = world.createBody(bdef);
+//		
+//		shape.setAsBox((bounds.getWidth() / 2)/ HiddenKill.PPM,(bounds.getHeight() / 2)/ HiddenKill.PPM);
+//		fdef.shape = shape;
+//		body.createFixture(fdef);
 		
 	}
 	

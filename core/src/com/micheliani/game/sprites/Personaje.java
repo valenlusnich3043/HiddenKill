@@ -1,14 +1,9 @@
 package com.micheliani.game.sprites;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.pantallas.PantallaJuego;
@@ -18,10 +13,10 @@ public class Personaje extends Sprite {
 		FALLING, JUMPING, STANDING, RUNNING, DEAD
 	}
 
-	public State currentState;
-	public State previousState;
-	public World world;
-	public Body b2body;
+	private String currentState;
+	public String previousState;
+//	public World world;
+//	public Body b2body;
 	private Animation<TextureRegion> CyborgStand;
 	private Animation<TextureRegion> CyborgRun;
 	private Animation<TextureRegion> CyborgJump;
@@ -29,11 +24,11 @@ public class Personaje extends Sprite {
 	private boolean runningRight;
 	private boolean muerteJugador;
 
-	public Personaje(World world, PantallaJuego screen) {
+	public Personaje(PantallaJuego screen) {
 		super(screen.getAtlas().findRegion("Cyborg_idle"));
-		this.world = world;
-		currentState = State.STANDING;
-		previousState = State.STANDING;
+//		this.world = world;
+		currentState = "STANDING";
+		previousState = "STANDING";
 		stateTimer = 0;
 		runningRight = true;
 
@@ -64,76 +59,84 @@ public class Personaje extends Sprite {
 	}
 
 	public void update(float dt) {
-		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+//		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 		setRegion(getFrame(dt));
 	}
 
 	private TextureRegion getFrame(float dt) {
-		currentState = getState();
+//		currentState = getState();
 
 		TextureRegion region;
 		switch (currentState) {
-		case JUMPING:
+		case "JUMPING":
 			region = CyborgJump.getKeyFrame(stateTimer);
 			break;
-		case RUNNING:
+		case "RUNNING":
 			region = CyborgRun.getKeyFrame(stateTimer, true);
 			break;
-		case FALLING:
-		case STANDING:
+		case "FALLING":
+		case "STANDING":
 		default:
 			region = CyborgStand.getKeyFrame(stateTimer);
 			break;
 		}
 
-		if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+		if ((/*b2body.getLinearVelocity().x < 0 ||*/ !runningRight) && !region.isFlipX()) {
 			region.flip(true, false);
 			runningRight = false;
-		} else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+		} else if ((/*b2body.getLinearVelocity().x > 0 ||*/ runningRight) && region.isFlipX()) {
 			region.flip(true, false);
 			runningRight = true;
 		}
 		
+		System.out.println(currentState + "      "+previousState+ "    "+ stateTimer);
 		stateTimer = currentState == previousState ? stateTimer + dt: 0; 
 		previousState = currentState;
 
 		return region;
 	}
 	
-	private State getState() {
-		if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING) {
-			return State.JUMPING;
-		} else if (b2body.getLinearVelocity().y < 0) {
-			return State.FALLING;
-		} else if (b2body.getLinearVelocity().x != 0) {
-			return State.RUNNING;
-		} else if (muerteJugador){
-			return State.DEAD;
-		}else{
-			return State.STANDING;
-		}
-
-	}
+//	private State getState() {
+//		if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING) {
+//			return State.JUMPING;
+//		} else if (b2body.getLinearVelocity().y < 0) {
+//			return State.FALLING;
+//		} else if (b2body.getLinearVelocity().x != 0) {
+//			return State.RUNNING;
+//		} else if (muerteJugador){
+//			return State.DEAD;
+//		}else{
+//			return State.STANDING;
+//		}
+//
+//	}
 	
+
+	
+	
+	public void setCurrentState(String currentState) {
+		this.currentState = currentState;
+	}
+
 	public void jump(){
-        if (currentState != State.JUMPING) {
-            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
-            currentState = State.JUMPING;
-        }
+//        if (currentState != State.JUMPING) {
+//            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+//            currentState = State.JUMPING;
+//        }
     }
 	
 	public void definePersonaje() {
-		BodyDef bdef = new BodyDef();
-		bdef.position.set(32 / HiddenKill.PPM, 32 / HiddenKill.PPM);
-		bdef.type = BodyDef.BodyType.DynamicBody;
-		b2body = world.createBody(bdef);
+//		BodyDef bdef = new BodyDef();
+//		bdef.position.set(32 / HiddenKill.PPM, 32 / HiddenKill.PPM);
+//		bdef.type = BodyDef.BodyType.DynamicBody;
+//		b2body = world.createBody(bdef);
 
-		FixtureDef fdef = new FixtureDef();
-		CircleShape shape = new CircleShape();
-		shape.setRadius(6 / HiddenKill.PPM);
-
-		fdef.shape = shape;
-		b2body.createFixture(fdef);
+//		FixtureDef fdef = new FixtureDef();
+//		CircleShape shape = new CircleShape();
+//		shape.setRadius(6 / HiddenKill.PPM);
+//
+//		fdef.shape = shape;
+//		b2body.createFixture(fdef);
 
 	}
 	

@@ -42,9 +42,12 @@ public class PantallaJuego implements Screen{
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 		
+	
+	private float contInicio = 0; 
+	
 	//Box2d variables
-	private World world;
-	private Box2DDebugRenderer b2dr;
+//	private World world;
+//	private Box2DDebugRenderer b2dr;
 	
 	public Personaje player;
 	public Personaje player2;
@@ -76,13 +79,13 @@ public class PantallaJuego implements Screen{
 //		camaraJuego.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 		camaraJuego.setToOrtho(false, gamePort.getWorldWidth(), gamePort.getWorldHeight());
 		
-		world = new World(new Vector2(0, -10), true);
-		b2dr = new Box2DDebugRenderer();
-		
-		new B2WorldCreator(world, map);
-		
-		player = new Personaje(world, this);
-		player2 = new Personaje(world,this);
+//		world = new World(new Vector2(0, -10), true);
+//		b2dr = new Box2DDebugRenderer();
+//		
+//		new B2WorldCreator(world, map);
+
+		player = new Personaje(this);
+		player2 = new Personaje(this);
 		
 		music = HiddenKill.manager.get("audio/musica/musica.ogg",  Music.class);
 		music.setVolume(0.08f);
@@ -122,18 +125,18 @@ public class PantallaJuego implements Screen{
 		
 		if (teclas.isDerecha1()) {
 			if(nroJugador==1) {
-				player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);							
+//				player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);							
 			}else {
-				player2.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player2.b2body.getWorldCenter(), true);							
+//				player2.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player2.b2body.getWorldCenter(), true);							
 			}
 			hc.enviarMensaje("ApreteDerecha");
 		}
 		
 		if (teclas.isIzquierda1()) {
 			if(nroJugador==1) {
-				player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+//				player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
 			}else {
-				player2.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player2.b2body.getWorldCenter(), true);
+//				player2.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player2.b2body.getWorldCenter(), true);
 			}
 			hc.enviarMensaje("ApreteIzquierda");
 		}
@@ -144,29 +147,33 @@ public class PantallaJuego implements Screen{
 		//handle user input first
 		handleInput(dt);
 		
-		world.step(1/60f, 6, 2);
+//		world.step(1/60f, 6, 2);
 		
 		player.update(dt);
 		player2.update(dt);
 
 		hud.update(dt);
 		
-		camaraJuego.position.x = player.b2body.getPosition().x;
-		camaraJuego.position.x = player2.b2body.getPosition().x;
-
+//		camaraJuego.position.x = player.b2body.getPosition().x;
+//		camaraJuego.position.x = player2.b2body.getPosition().x;
 		//update our gamecam with correct coordinates after changes
+		contInicio += dt;
+		if(contInicio>5) {
+			camaraJuego.position.x += 2*dt;
+		}
+		
 		camaraJuego.update();
 		//tell our renderer to draw only what our camera can see in our game world 	
 		renderer.setView(camaraJuego);
 		
 		//Determino los finales del juego
-		if(player.getY() < 0 || player.getX() > 87) {
-			player.currentState = Personaje.State.DEAD;
-		}
-		
-		if(player2.getY() < 0 || player2.getX() > 87) {
-			player2.currentState = Personaje.State.DEAD;
-		}
+//		if(player.getY() < 0 || player.getX() > 87) {
+//			player.currentState = Personaje.State.DEAD;
+//		}
+//		
+//		if(player2.getY() < 0 || player2.getX() > 87) {
+//			player2.currentState = Personaje.State.DEAD;
+//		}
 	}
 
 	@Override
@@ -189,7 +196,7 @@ public class PantallaJuego implements Screen{
 			renderer.render();
 
 			// renderer our Box2DDebugLines
-			b2dr.render(world, camaraJuego.combined);
+//			b2dr.render(world, camaraJuego.combined);
 
 			hiddenKill.batch.setProjectionMatrix(camaraJuego.combined);
 			hiddenKill.batch.begin();
@@ -212,14 +219,14 @@ public class PantallaJuego implements Screen{
 	}
 
 	public boolean gameOver() {
-		if(player.currentState == Personaje.State.DEAD) {
-			return false;
-		}
-		
-		if(player2.currentState == Personaje.State.DEAD) {
-			return false;
-		}
-		
+//		if(player.currentState == Personaje.State.DEAD) {
+//			return false;
+//		}
+//		
+//		if(player2.currentState == Personaje.State.DEAD) {
+//			return false;
+//		}
+//		
 		return false;
 	}
 	
@@ -251,8 +258,8 @@ public class PantallaJuego implements Screen{
 	public void dispose() {
 		map.dispose();
 		renderer.dispose();
-		world.dispose();
-		b2dr.dispose();
+//		world.dispose();
+//		b2dr.dispose();
 		hud.dispose();
 	}
 

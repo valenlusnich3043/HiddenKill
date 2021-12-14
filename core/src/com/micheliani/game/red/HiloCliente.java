@@ -62,26 +62,34 @@ public class HiloCliente extends Thread {
 		String[] mensajeParametrizado = msg.split("-");
 
 		if (mensajeParametrizado.length < 2) {
-			 if (msg.equals("Empieza")) {
+			if (msg.equals("Empieza")) {
 				Global.empieza = true;
 			}
 
 		} else {
-			if(mensajeParametrizado[0].equals("OK")) {
+			if (mensajeParametrizado[0].equals("OK")) {
 				ipServer = dp.getAddress();
 				app.nroJugador = Integer.parseInt(mensajeParametrizado[1]);
-			}else if (mensajeParametrizado[0].equals("Actualizar")) {
+			} else if (mensajeParametrizado[0].equals("Actualizar")) {
 				if (mensajeParametrizado[1].equals("P1")) {
 					float posX = Float.parseFloat(mensajeParametrizado[2]);
 					float posY = Float.parseFloat(mensajeParametrizado[3]);
 					app.player.setX(posX);
 					app.player.setY(posY);
-				}else if (mensajeParametrizado[1].equals("P2")) {
-						float posX = Float.parseFloat(mensajeParametrizado[2]);
-						float posY = Float.parseFloat(mensajeParametrizado[3]);
-						app.player2.setX(posX);
-						app.player2.setY(posY);
-					
+				} else if (mensajeParametrizado[1].equals("P2")) {
+					float posX = Float.parseFloat(mensajeParametrizado[2]);
+					float posY = Float.parseFloat(mensajeParametrizado[3]);
+					app.player2.setX(posX);
+					app.player2.setY(posY);
+
+				}
+			} else if (mensajeParametrizado[0].equals("ActualizarM")) {
+				if (mensajeParametrizado[1].equals("P1")) {
+					String state = (mensajeParametrizado[2]);
+					app.player.setCurrentState(state);
+				} else if (mensajeParametrizado[1].equals("P2")) {
+					String state = (mensajeParametrizado[2]);
+					app.player2.setCurrentState(state);
 				}
 			}
 		}
