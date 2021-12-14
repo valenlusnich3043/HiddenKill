@@ -14,14 +14,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 
-public class PantallaGameOver implements Screen{
+public class PantallaGameOver2 implements Screen{
 
 	private Viewport viewport;
 	private Stage stage;
 	
 	private Game game; 
 
-	public PantallaGameOver(Game game) {
+	public PantallaGameOver2(Game game) {
 		this.game = game;
 		viewport = new FitViewport(HiddenKill.ancho, HiddenKill.alto, new OrthographicCamera());
 		stage = new Stage(viewport, ((HiddenKill) game).batch);
@@ -33,13 +33,13 @@ public class PantallaGameOver implements Screen{
 		table.setFillParent(true);
 		
 		Label gameOverLabel = new Label("FIN DEL JUEGO", font);
-		Label perdiste = new Label("PERDISTE", font);
+		Label perdedor = new Label("GANASTE", font);
 		Label juegarDeNuevoLabel = new Label("Haz click en cualquier parte de la pantalla para iniciar de vuelta", font);
 		
 		table.add(gameOverLabel).expandX();
 		table.row();
 		table.row();
-		table.add(perdiste).expandX();
+		table.add(perdedor).expandX();
 		table.row();
 		table.row();
 		table.add(juegarDeNuevoLabel).expandX().padTop(10f);

@@ -14,13 +14,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.micheliani.game.HiddenKill;
 import com.micheliani.game.escenas.Hud;
+import com.micheliani.game.interfaces.JuegoEventListener;
 import com.micheliani.game.interfaces.KeyListener;
 import com.micheliani.game.red.HiloCliente;
 import com.micheliani.game.sprites.Personaje;
 import com.micheliani.game.utiles.Global;
 import com.micheliani.game.utiles.Render;
+import com.micheliani.game.utiles.Utiles;
 
-public class PantallaJuego implements Screen{
+public class PantallaJuego implements Screen, JuegoEventListener{
 
 	private HiddenKill hiddenKill;
 	private TextureAtlas atlas;
@@ -40,7 +42,10 @@ public class PantallaJuego implements Screen{
 		
 	
 	private float contInicio = 0; 
-	
+	private int jugador;
+	private int jugador2 = 0;
+	private boolean finJuego = false;
+
 	//Box2d variables
 //	private World world;
 //	private Box2DDebugRenderer b2dr;
@@ -58,6 +63,7 @@ public class PantallaJuego implements Screen{
 	private KeyListener teclas;
 	
 	public PantallaJuego(HiddenKill hiddenKill) { 
+
 		atlas = new TextureAtlas("personaje.pack");
 		
 		this.hiddenKill = hiddenKill;
@@ -87,6 +93,8 @@ public class PantallaJuego implements Screen{
 		music.setVolume(0.08f);
 		music.setLooping(true);
 		music.play();
+
+		Utiles.listener = this;
 
 	    hc = new HiloCliente(this);
 	    hc.start();
@@ -172,8 +180,6 @@ public class PantallaJuego implements Screen{
 //		}
 	}
 	
-	
-
 
 	@Override
 	public void render(float delta) {
@@ -214,10 +220,23 @@ public class PantallaJuego implements Screen{
 			hiddenKill.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 			hud.stage.draw();
 
-			if (gameOver()) {
-				hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
-				dispose();
+			if(finJuego) {
+				
+				if (jugador == 1) {
+					hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
+                    dispose();
+                }
+                if (jugador == 2) {
+                	hiddenKill.setScreen(new PantallaGameOver2(hiddenKill));
+                    dispose();
+                }
+				
 			}
+			
+//			if (gameOver()) {
+//				hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
+//				dispose();
+//			}
 		}
 
 	}
@@ -230,7 +249,7 @@ public class PantallaJuego implements Screen{
 //		if(player2.currentState == Personaje.State.DEAD) {
 //			return false;
 //		}
-//		
+
 		return false;
 	}
 	
@@ -265,6 +284,24 @@ public class PantallaJuego implements Screen{
 //		world.dispose();
 //		b2dr.dispose();
 		hud.dispose();
+	}
+
+	@Override
+	public void terminoJuego(int nroJugador) {
+		
+		if(nroJugador==this.jugador2) {
+			jugador = 1;
+		}else {
+			jugador = 2;
+		}
+		finJuego = true;
+		
+	}
+
+	@Override
+	public void asignarJugador(int jugador2) {
+		this.jugador2 = jugador2;
+		
 	}
 
 

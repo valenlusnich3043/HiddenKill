@@ -88,7 +88,6 @@ public class Personaje extends Sprite {
 			runningRight = true;
 		}
 		
-		System.out.println(currentState + "      "+previousState+ "    "+ stateTimer);
 		stateTimer = currentState == previousState ? stateTimer + dt: 0; 
 		previousState = currentState;
 
@@ -109,9 +108,6 @@ public class Personaje extends Sprite {
 //		}
 //
 //	}
-	
-
-	
 	
 	public void setCurrentState(String currentState) {
 		this.currentState = currentState;

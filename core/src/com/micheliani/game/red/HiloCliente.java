@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 import com.micheliani.game.pantallas.PantallaJuego;
 import com.micheliani.game.utiles.Global;
+import com.micheliani.game.utiles.Utiles;
 
 public class HiloCliente extends Thread {
 
@@ -59,7 +60,7 @@ public class HiloCliente extends Thread {
 	private void procesarMensaje(DatagramPacket dp) {
 		String msg = (new String(dp.getData())).trim();
 
-		String[] mensajeParametrizado = msg.split("-");
+		String[] mensajeParametrizado = msg.split("!");
 
 		if (mensajeParametrizado.length < 2) {
 			if (msg.equals("Empieza")) {
@@ -69,7 +70,8 @@ public class HiloCliente extends Thread {
 		} else {
 			if (mensajeParametrizado[0].equals("OK")) {
 				ipServer = dp.getAddress();
-				app.nroJugador = Integer.parseInt(mensajeParametrizado[1]);
+//				app.nroJugador = Integer.parseInt(mensajeParametrizado[1]);
+                Utiles.listener.asignarJugador(Integer.valueOf(mensajeParametrizado[1]));
 			} else if (mensajeParametrizado[0].equals("Actualizar")) {
 				if (mensajeParametrizado[1].equals("P1")) {
 					float posX = Float.parseFloat(mensajeParametrizado[2]);
@@ -96,6 +98,9 @@ public class HiloCliente extends Thread {
 				} else if (mensajeParametrizado[1].equals("P2")) {
 					Global.fin = true;
 				}
+			}else if (mensajeParametrizado[0].equals("Termino")) {
+				Utiles.listener.terminoJuego(Integer.parseInt(mensajeParametrizado[1]));
+				
 			}
 
 		}
