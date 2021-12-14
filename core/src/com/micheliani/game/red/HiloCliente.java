@@ -81,7 +81,6 @@ public class HiloCliente extends Thread {
 					float posY = Float.parseFloat(mensajeParametrizado[3]);
 					app.player2.setX(posX);
 					app.player2.setY(posY);
-
 				}
 			} else if (mensajeParametrizado[0].equals("ActualizarM")) {
 				if (mensajeParametrizado[1].equals("P1")) {
@@ -93,9 +92,9 @@ public class HiloCliente extends Thread {
 				}
 			} else if (mensajeParametrizado[0].equals("Fin")) {
 				if (mensajeParametrizado[1].equals("P1")) {
-					
+					Global.fin = true;
 				} else if (mensajeParametrizado[1].equals("P2")) {
-					
+					Global.fin = true;
 				}
 			}
 

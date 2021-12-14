@@ -182,8 +182,13 @@ public class PantallaJuego implements Screen{
 			Render.end();
 		} else {
 			// separate our update logic from render
+			
 			update(delta);
-
+			
+			if(Global.fin) {
+				hiddenKill.setScreen(new PantallaGameOver(hiddenKill));
+				dispose();
+			}
 			// limpiar pantalla
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
