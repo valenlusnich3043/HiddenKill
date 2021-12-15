@@ -230,7 +230,6 @@ public class PantallaJuego implements Screen, JuegoEventListener{
                 	hiddenKill.setScreen(new PantallaGameOver2(hiddenKill));
                     dispose();
                 }
-				
 			}
 			
 //			if (gameOver()) {
