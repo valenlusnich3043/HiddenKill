@@ -93,8 +93,7 @@ public class HiloCliente extends Thread {
 					app.player2.setCurrentState(state);
 				}
 			}else if (mensajeParametrizado[0].equals("Termino")) {
-				Utiles.listener.terminoJuego(Integer.parseInt(mensajeParametrizado[1]));
-				
+				Utiles.listener.terminoJuego(Integer.parseInt(mensajeParametrizado[1]));				
 			}
 
 		}
